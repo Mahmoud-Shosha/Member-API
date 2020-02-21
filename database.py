@@ -19,3 +19,13 @@ def get_db():
         g.db = connect_db()
 
     return g.db
+
+
+def create_schema():
+    """Read the sql from schema.sql and create it throught the connect_db."""
+    connection = connect_db()
+    cursor = connection.cursor()
+    cursor.execute(open('schema.sql', 'r').read())
+    connection.commit()
+    cursor.close()
+    connection.close()
