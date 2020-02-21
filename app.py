@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def close_db():
+def close_db(error):
     """Close the current DB connection if exists"""
     if hasattr(g, 'db'):
         g.db.close()
