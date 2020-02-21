@@ -1,7 +1,14 @@
-from flask import Flask
+from flask import Flask, g
 
 
 app = Flask(__name__)
+
+
+@app.teardown_appcontext
+def close_db():
+    """Close the current DB connection if exists"""
+    if hasattr(g, 'db'):
+        g.db.close()
 
 
 @app.route('/members', methods=['GET'])
