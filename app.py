@@ -41,7 +41,17 @@ def get_members():
 def get_member(member_id):
     """Return the member by member_id."""
 
-    return "Return the member by member_id."
+    # Get the member from the DB by member_id
+    connection = get_db()
+    cursor = connection.cursor()
+    cursor.execute("select * from members where id = %s;", (member_id, ))
+    member = cursor.fetchone()
+    cursor.close()
+
+    # Return the member in a json fromat
+    return jsonify({'member': {'id': member['id'], 'name': member['name'],
+                               'email': member['email'],
+                               'level': member['level']}})
 
 
 @app.route('/member', methods=['POST'])
