@@ -66,8 +66,8 @@ def add_member():
     cursor.close()
 
     # Return the new member in a json format
-    return jsonify({'id': member['id'], 'name': member['name'],
-                    'email': member['email'], 'level': member['level']})
+    return jsonify({'member': {'id': member['id'], 'name': member['name'],
+                               'email': member['email'], 'level': member['level']}})
 
 
 @app.route('/member/<int:member_id>', methods=['PUT'])
