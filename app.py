@@ -86,7 +86,28 @@ def add_member():
 def modify_member(member_id):
     """Modify a member in the DB by member_id."""
 
-    return "Modify a member in the DB by member_id."
+    # Get the member Data from the request body
+    member = request.get_json()
+    name = member['name']
+    email = member['email']
+    level = member['level']
+
+    # modifying the member in the DB
+    connection = get_db()
+    cursor = connection.cursor()
+    cursor.execute("""update members set name = %s, email = %s, level = %s
+                   where id = %s;""", (name, email, level, member_id))
+    connection.commit()
+
+    # Get the member from the DB by member_id
+    cursor.execute("select * from members where id = %s;", (member_id, ))
+    member = cursor.fetchone()
+    cursor.close()
+
+    # Return the modified member in a json format
+    return jsonify({'member': {'id': member['id'], 'name': member['name'],
+                               'email': member['email'],
+                               'level': member['level']}})
 
 
 @app.route('/member/<int:member_id>', methods=['DELETE'])
