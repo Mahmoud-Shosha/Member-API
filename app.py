@@ -114,7 +114,15 @@ def modify_member(member_id):
 def delete_member(member_id):
     """Delete a member from the DB by member_id."""
 
-    return "Delete a member from the DB by member_id."
+    # Delete the member from the DB by member_id
+    connection = get_db()
+    cursor = connection.cursor()
+    cursor.execute("delete from members where id = %s;", (member_id, ))
+    connection.commit()
+    cursor.close()
+
+    # Return a confirmation message
+    return jsonify({'message': 'The memeber is successfully deleted !'})
 
 
 if __name__ == '__main__':
