@@ -21,6 +21,7 @@ def get_members():
     cursor = connection.cursor()
     cursor.execute("select * from members;")
     members = cursor.fetchall()
+    cursor.close()
 
     # Form Python Data structure for the members
     members_list = []
