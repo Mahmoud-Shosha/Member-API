@@ -1,8 +1,31 @@
+from functools import wraps
 from flask import Flask, request, jsonify, g
 from database import get_db
 
 
 app = Flask(__name__)
+
+
+# Hard coded username and password
+api_username = 'Mahmoud'
+api_password = 'mahmoud'
+
+
+def protected(view):
+    """Return Authentication failed or the passed view functio"""
+
+    @wraps(view)
+    def wrapper(*args, **kwargs):
+
+        auth = request.authorization
+
+        if (auth and auth.username == api_username
+                and auth.password == api_password):
+            return view(*args, **kwargs)
+
+        return jsonify({'message': 'Authentication failed !'}), 403
+
+    return wrapper
 
 
 @app.teardown_appcontext
@@ -13,6 +36,7 @@ def close_db(error):
 
 
 @app.route('/members', methods=['GET'])
+@protected
 def get_members():
     """Return all the members in the DB."""
 
@@ -38,6 +62,7 @@ def get_members():
 
 
 @app.route('/member/<int:member_id>', methods=['GET'])
+@protected
 def get_member(member_id):
     """Return the member by member_id."""
 
@@ -55,6 +80,7 @@ def get_member(member_id):
 
 
 @app.route('/member', methods=['POST'])
+@protected
 def add_member():
     """Add a new member in the DB."""
 
@@ -83,6 +109,7 @@ def add_member():
 
 
 @app.route('/member/<int:member_id>', methods=['PUT'])
+@protected
 def modify_member(member_id):
     """Modify a member in the DB by member_id."""
 
@@ -111,6 +138,7 @@ def modify_member(member_id):
 
 
 @app.route('/member/<int:member_id>', methods=['DELETE'])
+@protected
 def delete_member(member_id):
     """Delete a member from the DB by member_id."""
 
