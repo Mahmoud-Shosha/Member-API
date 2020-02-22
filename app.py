@@ -16,7 +16,24 @@ def close_db(error):
 def get_members():
     """Return all the members in the DB."""
 
-    return "Return all the members in the DB."
+    # Get all members from the DB
+    connection = get_db()
+    cursor = connection.cursor()
+    cursor.execute("select * from members;")
+    members = cursor.fetchall()
+
+    # Form Python Data structure for the members
+    members_list = []
+    for member in members:
+        member_dict = {}
+        member_dict['id'] = member['id']
+        member_dict['name'] = member['name']
+        member_dict['email'] = member['email']
+        member_dict['level'] = member['level']
+        members_list.append(member_dict)
+
+    # Return all the members in the DB as json Data
+    return jsonify({'members': members_list})
 
 
 @app.route('/member/<int:member_id>', methods=['GET'])
